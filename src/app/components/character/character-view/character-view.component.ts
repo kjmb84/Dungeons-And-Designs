@@ -18,9 +18,8 @@ export class CharacterViewComponent implements OnInit {
   }
 
   getCharacters(): void {
-    this.characterService.getAllCharacters()
-    .subscribe(characters => this.characters = characters);
-    console.log(this.characters);
+    this.characterService
+      .getAllCharacters()
+      .subscribe(characters => this.characters = characters);
   }
-
 }
