@@ -1,0 +1,7 @@
+DM
+    * random encounter tables
+    * name generator
+    * lists of stuff like fall damage
+
+Player
+    * 
