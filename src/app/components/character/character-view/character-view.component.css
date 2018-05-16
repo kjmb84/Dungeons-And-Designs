@@ -1,0 +1,29 @@
+.ability {
+    border: 1px solid gray;
+    border-radius: 5px;
+    width: 100px;
+    margin-bottom: 3px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.ability-description {
+    visibility: hidden;
+    width: 200px;
+    border-radius: 5px;
+    background-color: antiquewhite;
+    padding: 5px 0;
+    position: absolute;
+}
+
+.ability:hover .ability-description {
+    visibility: visible;
+}
+
+.ability-name {
+    float: left;
+}
+
+.ability-score {
+    float: right;
+}
