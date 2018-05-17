@@ -3,8 +3,8 @@
     border-radius: 5px;
     width: 100px;
     margin-bottom: 3px;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding: 3px;
+    overflow: hidden;
 }
 
 .ability-description {

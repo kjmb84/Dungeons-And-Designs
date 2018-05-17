@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import ICharacter from './models/character/ICharacter';
+import { CharacterService } from './services/character.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,16 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'app';
+  characters: ICharacter[];
+
+  constructor(private characterService: CharacterService) {
+    this.getCharacters();
+  }
+
+  getCharacters(): void {
+    this.characterService.getAllCharacters()
+      .subscribe(characters => {
+        this.characters = characters;
+      });
+  }
 }

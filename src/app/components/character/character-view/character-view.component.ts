@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CharacterService } from '../../../services/character.service';
 import ICharacter from '../../../models/character/ICharacter';
 
@@ -9,19 +9,12 @@ import ICharacter from '../../../models/character/ICharacter';
 })
 export class CharacterViewComponent implements OnInit {
 
-  characters: ICharacter[];
+  @Input() character: ICharacter;
 
-  constructor(private characterService: CharacterService) { }
+  constructor() { }
 
   ngOnInit() {
-    this.getCharacters();
+
   }
 
-  getCharacters(): void {
-    this.characterService.getAllCharacters()
-      .subscribe(characters => {
-        this.characters = characters;
-        console.log(this.characters);
-      });
-  }
 }

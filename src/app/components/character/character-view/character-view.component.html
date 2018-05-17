@@ -1,9 +1,9 @@
-<div *ngFor="let character of characters">
-  <h2>Abilities</h2>
-  <div *ngFor="let ability of character.abilities">
-    <div class="ability">
-      <div class="ability-name">{{ability.name}}: </div><div class="ability-score">{{ability.score}}</div>
-      <span class="ability-description">{{ability.description}}</span>
-    </div>
+<h2>{{character.name}}</h2>
+<h2>Abilities</h2>
+<div *ngFor="let ability of character.abilities | abilityTrueScore : character">
+  <div class="ability">
+    <div class="ability-name">{{ability.ability.name}}: </div><div class="ability-score">{{ability.score}}</div>
+    <span class="ability-description">{{ability.description}}</span>
   </div>
 </div>
+<hr>
