@@ -21,16 +21,16 @@ export class AbilityTrueScorePipe implements PipeTransform {
     return this.abilityTrueScores;
   }
 
-  recursiveAttributeFindFromCharacterInterface(abilityName, obj, ability, abilityTrueScore) {
+  recursiveAttributeFindFromCharacterInterface(abilityName, obj: Object, ability, abilityTrueScore) {
     abilityTrueScore = abilityTrueScore
       ? abilityTrueScore
       : {
         score: ability.score,
         breakdown: [],
-        ability: ability
       };
-
-    for (const key of Object.keys(obj)) {
+    // for (const key of Object.keys(obj)) {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
         const newObj: any = (<any>obj)[key];
         if (key === 'attributes') {
             if (Array.isArray(newObj)) {
@@ -46,6 +46,7 @@ export class AbilityTrueScorePipe implements PipeTransform {
         } else if (typeof newObj === 'object') {
             this.recursiveAttributeFindFromCharacterInterface(newObj, abilityName, ability, abilityTrueScore);
         }
+      }
     }
 
     return abilityTrueScore;
