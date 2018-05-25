@@ -14,7 +14,7 @@ export class CharacterViewComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-
+    
   }
 
 }
