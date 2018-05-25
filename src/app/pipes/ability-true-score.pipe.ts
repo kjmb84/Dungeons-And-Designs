@@ -10,14 +10,10 @@ export class AbilityTrueScorePipe implements PipeTransform {
   abilityTrueScores = [];
 
   transform(abilities: UpgradedAbility[], character: ICharacter): any {
-    console.log(character);
-    
     for (const ability of abilities) {
       ability.breakdown = [];
       this.abilityTrueScores.push(this.recursiveAttributeFindFromCharacterInterface(ability, character));
     }
-
-    console.log(this.abilityTrueScores);
 
     return abilities;
   }
@@ -35,7 +31,6 @@ export class AbilityTrueScorePipe implements PipeTransform {
         }
       }
     }
-
     return ability;
   }
 
@@ -50,7 +45,6 @@ export class AbilityTrueScorePipe implements PipeTransform {
     }
     return ability;
   }
-
 }
 
 interface UpgradedAbility extends IAbility {
