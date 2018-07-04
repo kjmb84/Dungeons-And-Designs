@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { CharacterViewComponent } from './components/character/character-view/character-view.component';
 import { CharacterService } from './services/character.service';
 import { AbilityTrueScorePipe } from './pipes/ability-true-score.pipe';
+import { MapGridComponent } from './components/map/map-grid/map-grid.component';
+import { MapSquareComponent } from './components/map/map-square/map-square.component';
 
 const components = [
     CharacterViewComponent
@@ -23,7 +25,9 @@ const pipes = [
   declarations: [
     AppComponent,
     components,
-    pipes
+    pipes,
+    MapGridComponent,
+    MapSquareComponent
   ],
   imports: [
     BrowserModule,
