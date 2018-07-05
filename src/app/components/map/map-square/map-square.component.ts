@@ -1,4 +1,3 @@
-import { mapSquareDirections } from './../../../enums/map-square-directions';
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
@@ -7,8 +6,6 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./map-square.component.css']
 })
 export class MapSquareComponent implements OnInit {
-
-  @Input() directionType: mapSquareDirections;
 
   constructor() { }
 

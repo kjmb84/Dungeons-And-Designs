@@ -1,4 +1,4 @@
-export enum mapSquareDirections {
+export enum mapSquareDirection {
     arrowUp = 1,
     arrowRight = 2,
     arrowDown = 3,
