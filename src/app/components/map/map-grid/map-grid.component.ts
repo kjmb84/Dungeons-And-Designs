@@ -1,3 +1,4 @@
+import { CharacterService } from './../../../services/character.service';
 import { Observable } from 'rxjs/Observable';
 import { Component, OnInit, ViewChild,
   ElementRef, AfterViewInit, OnChanges, Input } from '@angular/core';
@@ -14,10 +15,10 @@ import 'rxjs/add/operator/debounceTime';
 })
 export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
 
-  @ViewChild('mapCanvas') mapCanvas: ElementRef;
-  @Input() xDimensions: number;
-  @Input() yDimensions: number;
+  private _characterService: CharacterService;
+
   @Input() dimensions: Dimensions = new Dimensions(10, 10);
+  @ViewChild('mapCanvas') mapCanvas: ElementRef;
   public canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
 
@@ -25,8 +26,10 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
   private cellHeight: number;
 
   private cellInFocus: FocusCell = new FocusCell();
+  private mapCells: MapCell[] = [];
 
-  constructor() { }
+  constructor(_characterService: CharacterService) {
+  }
 
   ngOnInit() {
   }
@@ -39,6 +42,7 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
     this.cellHeight = this.canvas.height / this.dimensions.y;
 
     this.initializeCanvas();
+    this.initializeMapCells();
     this.captureEvents(this.canvas);
     this.setCellInFocusOutline();
   }
@@ -70,8 +74,16 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
 
     this.canvas.style.backgroundImage = `url('${url}')`;
 
-    this.cellInFocus.x = Math.floor(this.xDimensions / 2);
-    this.cellInFocus.y = Math.floor(this.yDimensions / 2);
+    this.cellInFocus.x = Math.floor(this.dimensions.x / 2);
+    this.cellInFocus.y = Math.floor(this.dimensions.y / 2);
+  }
+
+  private initializeMapCells() {
+    for (let i = 0; i < this.dimensions.x; i++) {
+      for (let j = 0; j < this.dimensions.y; j++) {
+        this.mapCells.push(new MapCell(this.dimensions, this.cellWidth, this.cellHeight, i, j));
+      }
+    }
   }
 
   private captureEvents(canvasEl: HTMLCanvasElement) {
@@ -156,6 +168,22 @@ class Dimensions {
     this.x = x;
     this.y = y;
   }
+}
+
+class MapCell {
+  xStart: number;
+  xEnd: number;
+  yStart: number;
+  yEnd: number;
+
+  constructor(dimensions: Dimensions, width: number, height: number, xCoordinate: number, yCoordinate: number) {
+    this.xStart = width / dimensions.x * xCoordinate;
+    this.xEnd = this.xStart + width / dimensions.x - 1;
+    this.yStart = width / dimensions.y * yCoordinate;
+    this.yEnd = this.yStart + width / dimensions.y - 1;
+  }
+
+  
 }
 
 class MapCoordinates extends Dimensions {

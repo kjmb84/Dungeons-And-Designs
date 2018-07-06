@@ -15,9 +15,17 @@ const httpOptions = {
 export class CharacterService {
 
   characters: ICharacter[] = [];
+  mainCharacter: ICharacter;
   private charactersUrl = `${environment.apiUrl}/character`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.getAllCharacters()
+    .subscribe(c => {
+      this.characters = c;
+      this.mainCharacter = this.characters[0];
+      console.log(c);
+    });
+  }
 
   getAllCharacters(): Observable<ICharacter[]> {
     return this.http.get<ICharacter[]>(this.charactersUrl);
