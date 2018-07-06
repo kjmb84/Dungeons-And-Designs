@@ -46,15 +46,14 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
     this.cellInFocus = {x: Math.floor(this.xDimensions / 2), y: Math.floor(this.yDimensions / 2)};
 
     this.initializeCanvas();
-    this.setCellInFocusOutline();
     this.captureEvents(this.canvas);
+    this.setCellInFocusOutline();
   }
 
   ngOnChanges(): void {
   }
 
   initializeCanvas(): void {
-    const _this = this;
     const data = `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"> \
         <defs> \
             <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse"> \
@@ -73,7 +72,6 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
         <rect width="100%" height="100%" fill="url(#grid)" /> \
     </svg>`;
 
-    const img = new Image();
     const svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
     const url = URL.createObjectURL(svg);
 
@@ -86,8 +84,8 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
     const keyPresses = keyDowns
       .debounceTime(100)
       .subscribe((a: KeyboardEvent) => {
-        this.setNewCellInFocus(MapSquareDirection[a.code]);
         this.clear();
+        this.setNewCellInFocus(MapSquareDirection[a.code]);
         this.setCellInFocusOutline();
       });
   }
@@ -108,24 +106,28 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   setNewCellInFocus(direction: MapSquareDirection): void {
+    // TODO figure out how to pass previous cell by value instead of reference
+    const previousCell: MapCoordinates = {x: this.cellInFocus.x, y: this.cellInFocus.y};
     switch (direction) {
       case MapSquareDirection.ArrowDown:
-        this.cellInFocusHistory.push(this.cellInFocus);
+        this.cellInFocusHistory.push(previousCell);
         this.cellInFocus.y += 1;
         break;
       case MapSquareDirection.ArrowRight:
-        this.cellInFocusHistory.push(this.cellInFocus);
+        this.cellInFocusHistory.push(previousCell);
         this.cellInFocus.x += 1;
         break;
       case MapSquareDirection.ArrowUp:
-        this.cellInFocusHistory.push(this.cellInFocus);
+        this.cellInFocusHistory.push(previousCell);
         this.cellInFocus.y -= 1;
         break;
       case MapSquareDirection.ArrowLeft:
-        this.cellInFocusHistory.push(this.cellInFocus);
+        this.cellInFocusHistory.push(previousCell);
         this.cellInFocus.x -= 1;
         break;
       }
+
+      console.log(this.cellInFocusHistory);
   }
 
   setCellInFocusOutline(): void {
