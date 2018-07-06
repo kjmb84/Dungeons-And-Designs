@@ -1,6 +1,15 @@
+import { Observable } from 'rxjs/Observable';
 import { Component, OnInit, ViewChild,
-  ElementRef, AfterViewInit, OnChanges } from '@angular/core';
-import { mapSquareDirection } from '../../../enums/map-square-directions';
+  ElementRef, AfterViewInit, OnChanges, Input } from '@angular/core';
+import { MapSquareDirection } from '../../../enums/map-square-directions';
+import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/operator/takeUntil';
+import 'rxjs/add/operator/pairwise';
+import 'rxjs/add/operator/groupBy';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/debounceTime';
+
 
 @Component({
   selector: 'app-map-grid',
@@ -10,12 +19,17 @@ import { mapSquareDirection } from '../../../enums/map-square-directions';
 export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
 
   @ViewChild('mapCanvas') mapCanvas: ElementRef;
+  @Input() xDimensions: number;
+  @Input() yDimensions: number;
+  @Input() dimensions: MapDimensions = {x: 10, y: 10};
   public canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
-  private dimensions: MapDimensions = {x: 11, y: 11};
+
   private cellWidth: number;
   private cellHeight: number;
 
+  private cellInFocus: MapCoordinates;
+  private cellInFocusHistory: MapCoordinates[] = [];
 
   constructor() { }
 
@@ -29,13 +43,18 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
     this.cellWidth = this.canvas.width / this.dimensions.x;
     this.cellHeight = this.canvas.height / this.dimensions.y;
 
-    this.initializeCanvas(this.context);
+    this.cellInFocus = {x: Math.floor(this.xDimensions / 2), y: Math.floor(this.yDimensions / 2)};
+
+    this.initializeCanvas();
+    this.setCellInFocusOutline();
+    this.captureEvents(this.canvas);
   }
 
   ngOnChanges(): void {
   }
 
-  initializeCanvas(context: CanvasRenderingContext2D): void {
+  initializeCanvas(): void {
+    const _this = this;
     const data = `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"> \
         <defs> \
             <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse"> \
@@ -58,18 +77,25 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
     const svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
     const url = URL.createObjectURL(svg);
 
-    img.onload = function () {
-      context.drawImage(img, 0, 0);
-      URL.revokeObjectURL(url);
-    };
-    img.src = url;
+    this.canvas.style.backgroundImage = `url('${url}')`;
+  }
+
+  private captureEvents(canvasEl: HTMLCanvasElement) {
+    const keyDowns = Observable.fromEvent(canvasEl, 'keydown');
+
+    const keyPresses = keyDowns
+      .debounceTime(100)
+      .subscribe((a: KeyboardEvent) => {
+        this.setNewCellInFocus(MapSquareDirection[a.code]);
+        this.clear();
+        this.setCellInFocusOutline();
+      });
   }
 
   readMapCell(): void {
-    
   }
 
-  setCellDirection(cell: MapCoordinates, direction: mapSquareDirection) {
+  setCellDirection(cell: MapCoordinates, direction: MapSquareDirection) {
     const xStart = this.cellWidth * cell.x + 0.5 * this.cellWidth;
     const yStart = this.cellHeight * cell.y + 0.5 * this.cellHeight;
     const xEnd = this.canvas.width / this.dimensions.x * (cell.x + 1)  + 0.5 * this.cellWidth;
@@ -81,8 +107,45 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
     this.context.stroke();
   }
 
-  clearMapCell(): void {
+  setNewCellInFocus(direction: MapSquareDirection): void {
+    switch (direction) {
+      case MapSquareDirection.ArrowDown:
+        this.cellInFocusHistory.push(this.cellInFocus);
+        this.cellInFocus.y += 1;
+        break;
+      case MapSquareDirection.ArrowRight:
+        this.cellInFocusHistory.push(this.cellInFocus);
+        this.cellInFocus.x += 1;
+        break;
+      case MapSquareDirection.ArrowUp:
+        this.cellInFocusHistory.push(this.cellInFocus);
+        this.cellInFocus.y -= 1;
+        break;
+      case MapSquareDirection.ArrowLeft:
+        this.cellInFocusHistory.push(this.cellInFocus);
+        this.cellInFocus.x -= 1;
+        break;
+      }
+  }
 
+  setCellInFocusOutline(): void {
+    // this.context.globalCompositeOperation = 'destination-atop';
+    this.context.rect(this.cellInFocus.x * this.cellWidth, this.cellInFocus.y * this.cellHeight, this.cellWidth, this.cellHeight);
+    this.context.lineWidth = 4;
+
+    this.context.strokeStyle = 'rgba(0,255,0,0.7)';
+    this.context.fillStyle = 'rgba(0,0,255,0.05)';
+
+    this.context.fill();
+    this.context.stroke();
+  }
+
+  setCellInFocusHistoryOutline(): void {
+
+  }
+
+  clear(): void {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
 }
