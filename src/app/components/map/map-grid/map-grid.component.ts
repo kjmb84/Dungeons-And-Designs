@@ -3,10 +3,6 @@ import { Component, OnInit, ViewChild,
   ElementRef, AfterViewInit, OnChanges, Input } from '@angular/core';
 import { MapSquareDirection } from '../../../enums/map-square-directions';
 import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/operator/pairwise';
-import 'rxjs/add/operator/groupBy';
-import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/debounceTime';
 
@@ -21,15 +17,14 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('mapCanvas') mapCanvas: ElementRef;
   @Input() xDimensions: number;
   @Input() yDimensions: number;
-  @Input() dimensions: MapDimensions = {x: 10, y: 10};
+  @Input() dimensions: Dimensions = new Dimensions(10, 10);
   public canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
 
   private cellWidth: number;
   private cellHeight: number;
 
-  private cellInFocus: MapCoordinates;
-  private cellInFocusHistory: MapCoordinates[] = [];
+  private cellInFocus: FocusCell = new FocusCell();
 
   constructor() { }
 
@@ -42,8 +37,6 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
 
     this.cellWidth = this.canvas.width / this.dimensions.x;
     this.cellHeight = this.canvas.height / this.dimensions.y;
-
-    this.cellInFocus = {x: Math.floor(this.xDimensions / 2), y: Math.floor(this.yDimensions / 2)};
 
     this.initializeCanvas();
     this.captureEvents(this.canvas);
@@ -76,12 +69,15 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
     const url = URL.createObjectURL(svg);
 
     this.canvas.style.backgroundImage = `url('${url}')`;
+
+    this.cellInFocus.x = Math.floor(this.xDimensions / 2);
+    this.cellInFocus.y = Math.floor(this.yDimensions / 2);
   }
 
   private captureEvents(canvasEl: HTMLCanvasElement) {
-    const keyDowns = Observable.fromEvent(canvasEl, 'keydown');
+    const keyDown = Observable.fromEvent(canvasEl, 'keydown');
 
-    const keyPresses = keyDowns
+    const keyPresses = keyDown
       .debounceTime(100)
       .subscribe((a: KeyboardEvent) => {
         this.clear();
@@ -106,28 +102,26 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   setNewCellInFocus(direction: MapSquareDirection): void {
-    // TODO figure out how to pass previous cell by value instead of reference
-    const previousCell: MapCoordinates = {x: this.cellInFocus.x, y: this.cellInFocus.y};
-    switch (direction) {
-      case MapSquareDirection.ArrowDown:
-        this.cellInFocusHistory.push(previousCell);
-        this.cellInFocus.y += 1;
-        break;
-      case MapSquareDirection.ArrowRight:
-        this.cellInFocusHistory.push(previousCell);
-        this.cellInFocus.x += 1;
-        break;
-      case MapSquareDirection.ArrowUp:
-        this.cellInFocusHistory.push(previousCell);
-        this.cellInFocus.y -= 1;
-        break;
-      case MapSquareDirection.ArrowLeft:
-        this.cellInFocusHistory.push(previousCell);
-        this.cellInFocus.x -= 1;
-        break;
+    // TODO figure out more elegant way to pass previous cell by value instead of reference
+    const previousCell: MapCoordinates = new MapCoordinates(this.cellInFocus.x, this.cellInFocus.y);
+    if (direction !== undefined) {
+      this.cellInFocus.history.push(previousCell);
+      switch (direction) {
+        case MapSquareDirection.ArrowDown:
+          this.cellInFocus.incrementY();
+          break;
+        case MapSquareDirection.ArrowRight:
+          this.cellInFocus.incrementX();
+          break;
+        case MapSquareDirection.ArrowUp:
+          this.cellInFocus.decrementY();
+          break;
+        case MapSquareDirection.ArrowLeft:
+          this.cellInFocus.decrementX();
+          break;
       }
-
-      console.log(this.cellInFocusHistory);
+    }
+      console.log(this.cellInFocus.history);
   }
 
   setCellInFocusOutline(): void {
@@ -152,12 +146,37 @@ export class MapGridComponent implements OnInit, AfterViewInit, OnChanges {
 
 }
 
-interface MapDimensions {
+
+
+class Dimensions {
   x: number;
   y: number;
+
+  constructor(x?: number, y?: number) {
+    this.x = x;
+    this.y = y;
+  }
 }
 
-interface MapCoordinates {
-  x: number;
-  y: number;
+class MapCoordinates extends Dimensions {
+
+  incrementX() {
+    this.x++;
+  }
+
+  decrementX() {
+    this.x--;
+  }
+
+  incrementY() {
+    this.y++;
+  }
+
+  decrementY() {
+    this.y--;
+  }
+}
+
+class FocusCell extends MapCoordinates {
+  history: Dimensions[] = [];
 }
