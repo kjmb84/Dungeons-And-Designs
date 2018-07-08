@@ -45,11 +45,11 @@ export class MapGridComponent implements AfterViewInit {
 
   initializeFocusCell(): void {
     this.cellInFocus = new FocusCell(this.getMapCenter(), this.context);
-    this.cellInFocus.outline();
 
-    // TODO figure out why these two lines are necessary
+    // TODO: figure out why these two lines are necessary
     this.cellInFocus.coordinates.x = Math.floor(this.dimensions.x / 2);
     this.cellInFocus.coordinates.y = Math.floor(this.dimensions.y / 2);
+    this.cellInFocus.outline();
   }
 
   getMapCenter(): MapCoordinates {
@@ -96,17 +96,14 @@ export class MapGridComponent implements AfterViewInit {
     }
   }
 
-  private initalizeFocusCell(): void {}
-
   private captureEvents(canvasEl: HTMLCanvasElement): void {
     const keyDown = Observable.fromEvent(canvasEl, 'keydown');
 
-    const keyPresses = keyDown
+    keyDown
       .debounceTime(100)
       .subscribe((a: KeyboardEvent) => {
         this.clear();
         this.cellInFocus.move(MapSquareDirection[a.code]);
-        this.cellInFocus.outline();
       });
   }
 
@@ -125,7 +122,6 @@ export class MapGridComponent implements AfterViewInit {
   clear(): void {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
-
 }
 
 class Dimensions {
@@ -159,19 +155,19 @@ class MapCell extends Dimensions {
 
 class MapCoordinates extends MapCell {
 
-  incrementX() {
+  moveLeft() {
     this.x++;
   }
 
-  decrementX() {
+  moveRight() {
     this.x--;
   }
 
-  incrementY() {
+  moveDown() {
     this.y++;
   }
 
-  decrementY() {
+  moveUp() {
     this.y--;
   }
 }
@@ -179,6 +175,7 @@ class MapCoordinates extends MapCell {
 class FocusCell {
   coordinates: MapCoordinates;
   history: MapCoordinates[] = [];
+  canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
 
   constructor(coordinates: MapCoordinates, context: CanvasRenderingContext2D) {
@@ -192,20 +189,22 @@ class FocusCell {
       this.history.push(previousCell);
       switch (direction) {
         case MapSquareDirection.ArrowDown:
-          this.coordinates.incrementY();
+          this.coordinates.moveDown();
           break;
         case MapSquareDirection.ArrowRight:
-          this.coordinates.incrementX();
+          this.coordinates.moveLeft();
           break;
         case MapSquareDirection.ArrowUp:
-          this.coordinates.decrementY();
+          this.coordinates.moveUp();
           break;
         case MapSquareDirection.ArrowLeft:
-          this.coordinates.decrementX();
+          this.coordinates.moveRight();
           break;
       }
     }
-      console.log(this.history);
+
+    this.outline();
+    console.log(this.history);
   }
 
   outline() {
@@ -222,9 +221,12 @@ class FocusCell {
     this.context.fill();
     this.context.stroke();
   }
+
+  // clear(): void {
+  //   this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  // }
 }
 
 class MapObject {
   coordinates: MapCoordinates;
-
 }
