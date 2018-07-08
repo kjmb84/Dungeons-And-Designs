@@ -17,7 +17,7 @@ export class MapGridComponent implements AfterViewInit {
 
   private _characterService: CharacterService;
 
-  @Input() dimensions: Dimensions = new Dimensions(10, 10);
+  @Input() dimensions: Dimensions = new Dimensions(11, 11);
   @ViewChild('mapCanvas') mapCanvas: ElementRef;
   public canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
@@ -44,7 +44,7 @@ export class MapGridComponent implements AfterViewInit {
   }
 
   initializeFocusCell(): void {
-    this.cellInFocus = new FocusCell(this.getMapCenter(), this.context);
+    this.cellInFocus = new FocusCell(this.getMapCenter(), this.context, this.canvas);
 
     // TODO: figure out why these two lines are necessary
     this.cellInFocus.coordinates.x = Math.floor(this.dimensions.x / 2);
@@ -107,17 +107,17 @@ export class MapGridComponent implements AfterViewInit {
       });
   }
 
-  setCellDirection(cell: MapCoordinates, direction: MapSquareDirection) {
-    const xStart = this.cellWidth * cell.x + 0.5 * this.cellWidth;
-    const yStart = this.cellHeight * cell.y + 0.5 * this.cellHeight;
-    const xEnd = this.canvas.width / this.dimensions.x * (cell.x + 1)  + 0.5 * this.cellWidth;
-    const yEnd = this.canvas.height / this.dimensions.y * (cell.y + 1)  + 0.5 * this.cellHeight;
+  // setCellDirection(cell: MapCoordinates, direction: MapSquareDirection) {
+  //   const xStart = this.cellWidth * cell.x + 0.5 * this.cellWidth;
+  //   const yStart = this.cellHeight * cell.y + 0.5 * this.cellHeight;
+  //   const xEnd = this.canvas.width / this.dimensions.x * (cell.x + 1)  + 0.5 * this.cellWidth;
+  //   const yEnd = this.canvas.height / this.dimensions.y * (cell.y + 1)  + 0.5 * this.cellHeight;
 
-    this.context.beginPath();
-    this.context.moveTo(xStart, yStart);
-    this.context.lineTo(xEnd, yEnd);
-    this.context.stroke();
-  }
+  //   this.context.beginPath();
+  //   this.context.moveTo(xStart, yStart);
+  //   this.context.lineTo(xEnd, yEnd);
+  //   this.context.stroke();
+  // }
 
   clear(): void {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -178,9 +178,10 @@ class FocusCell {
   canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
 
-  constructor(coordinates: MapCoordinates, context: CanvasRenderingContext2D) {
+  constructor(coordinates: MapCoordinates, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
     this.coordinates = coordinates;
     this.context = context;
+    this.canvas = canvas;
   }
 
   move(direction: MapSquareDirection): void {
@@ -222,9 +223,10 @@ class FocusCell {
     this.context.stroke();
   }
 
-  // clear(): void {
-  //   this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  // }
+  clear(): void {
+    // this.context.clearRect()
+    // this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
 }
 
 class MapObject {
