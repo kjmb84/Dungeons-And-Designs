@@ -18,7 +18,43 @@ export class MapGridComponent implements AfterViewInit {
   private _characterService: CharacterService;
 
   @Input() dimensions: Dimensions = new Dimensions(11, 11);
-  @ViewChild('mapCanvas') mapCanvas: ElementRef;
+  @ViewChild('mapCanvas') mapCanvasElement: ElementRef;
+  private mapCanvas: MapCanvas;
+
+  constructor(_characterService: CharacterService) { }
+
+  ngAfterViewInit(): void {
+    this.mapCanvas = new MapCanvas();
+    this.mapCanvas.setCanvasAndContext(<HTMLCanvasElement>this.mapCanvasElement.nativeElement);
+    this.mapCanvas.setCellDimensions();
+    
+    this.mapCanvas.initializeCanvas();
+    this.mapCanvas.initializeMapCells();
+    this.mapCanvas.initializeFocusCell();
+    this.mapCanvas.beginKeyboardEventCapture();
+  }
+
+
+  
+
+}
+
+  // setCellDirection(cell: MapCoordinates, direction: MapSquareDirection) {
+  //   const xStart = this.cellWidth * cell.x + 0.5 * this.cellWidth;
+  //   const yStart = this.cellHeight * cell.y + 0.5 * this.cellHeight;
+  //   const xEnd = this.canvas.width / this.dimensions.x * (cell.x + 1)  + 0.5 * this.cellWidth;
+  //   const yEnd = this.canvas.height / this.dimensions.y * (cell.y + 1)  + 0.5 * this.cellHeight;
+
+  //   this.context.beginPath();
+  //   this.context.moveTo(xStart, yStart);
+  //   this.context.lineTo(xEnd, yEnd);
+  //   this.context.stroke();
+  // }
+
+
+
+class MapCanvas {
+
   public canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
 
@@ -28,19 +64,36 @@ export class MapGridComponent implements AfterViewInit {
   private cellInFocus: FocusCell;
   private mapCells: MapCell[] = [];
 
-  constructor(_characterService: CharacterService) { }
+  dimensions: Dimensions = new Dimensions(11, 11);
 
-  ngAfterViewInit(): void {
-    this.canvas = <HTMLCanvasElement>this.mapCanvas.nativeElement;
-    this.context = this.canvas.getContext('2d');
+  getMapCenter(): MapCoordinates {
+    return new MapCoordinates
+      (
+        this.dimensions,
+        this.cellWidth,
+        this.cellHeight,
+        Math.floor(this.dimensions.x / 2),
+        Math.floor(this.dimensions.y / 2)
+      );
+  }
 
-    this.cellWidth = this.canvas.width / this.dimensions.x;
-    this.cellHeight = this.canvas.height / this.dimensions.y;
+  beginKeyboardEventCapture(): void {
+    const keyDown = Observable.fromEvent(this.canvas, 'keydown');
+    const keyPress = Observable.fromEvent(this.canvas, 'keyPress');
 
-    this.initializeCanvas();
-    this.initializeMapCells();
-    this.initializeFocusCell();
-    this.captureEvents(this.canvas);
+    keyPress
+      .subscribe((ke: KeyboardEvent) => {
+        this.clear();
+        this.cellInFocus.move(MapSquareDirection[ke.code]);
+      });
+
+    keyDown
+      .debounceTime(100)
+      .subscribe((ke: KeyboardEvent) => {
+        this.clear();
+        this.cellInFocus.move(MapSquareDirection[ke.code]);
+      });
+
   }
 
   initializeFocusCell(): void {
@@ -52,15 +105,22 @@ export class MapGridComponent implements AfterViewInit {
     this.cellInFocus.outline();
   }
 
-  getMapCenter(): MapCoordinates {
-    return new MapCoordinates
-      (
-        this.dimensions,
-        this.cellWidth,
-        this.cellHeight,
-        Math.floor(this.dimensions.x / 2),
-        Math.floor(this.dimensions.y / 2)
-      );
+
+  initializeMapCells() {
+    for (let i = 0; i < this.dimensions.x; i++) {
+      for (let j = 0; j < this.dimensions.y; j++) {
+        this.mapCells.push(new MapCell(this.dimensions, this.cellWidth, this.cellHeight, i, j));
+      }
+    }
+  }
+
+  setCanvasAndContext(canvas: HTMLCanvasElement): void {
+    this.canvas = canvas;
+    this.context = this.canvas.getContext('2d');
+  }
+
+  clear(): void {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   initializeCanvas(): void {
@@ -88,46 +148,9 @@ export class MapGridComponent implements AfterViewInit {
     this.canvas.style.backgroundImage = `url('${url}')`;
   }
 
-  private initializeMapCells() {
-    for (let i = 0; i < this.dimensions.x; i++) {
-      for (let j = 0; j < this.dimensions.y; j++) {
-        this.mapCells.push(new MapCell(this.dimensions, this.cellWidth, this.cellHeight, i, j));
-      }
-    }
-  }
-
-  private captureEvents(canvasEl: HTMLCanvasElement): void {
-    const keyDown = Observable.fromEvent(canvasEl, 'keydown');
-    const keyPress = Observable.fromEvent(canvasEl, 'keyPress');
-
-    keyPress
-      .subscribe((ke: KeyboardEvent) => {
-        this.clear();
-        this.cellInFocus.move(MapSquareDirection[ke.code]);
-      });
-
-    keyDown
-      .debounceTime(100)
-      .subscribe((ke: KeyboardEvent) => {
-        this.clear();
-        this.cellInFocus.move(MapSquareDirection[ke.code]);
-      });
-  }
-
-  // setCellDirection(cell: MapCoordinates, direction: MapSquareDirection) {
-  //   const xStart = this.cellWidth * cell.x + 0.5 * this.cellWidth;
-  //   const yStart = this.cellHeight * cell.y + 0.5 * this.cellHeight;
-  //   const xEnd = this.canvas.width / this.dimensions.x * (cell.x + 1)  + 0.5 * this.cellWidth;
-  //   const yEnd = this.canvas.height / this.dimensions.y * (cell.y + 1)  + 0.5 * this.cellHeight;
-
-  //   this.context.beginPath();
-  //   this.context.moveTo(xStart, yStart);
-  //   this.context.lineTo(xEnd, yEnd);
-  //   this.context.stroke();
-  // }
-
-  clear(): void {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  setCellDimensions(): void {
+    this.cellWidth = this.canvas.width / this.dimensions.x;
+    this.cellHeight = this.canvas.height / this.dimensions.y;
   }
 }
 

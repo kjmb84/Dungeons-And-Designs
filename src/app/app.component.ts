@@ -7,11 +7,15 @@ import { CharacterService } from './services/character/character.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'app';
   characters: ICharacter[];
+  character: ICharacter;
 
   constructor(private characterService: CharacterService) {
+  }
+
+  ngOnInit() {
     this.getCharacters();
   }
 
@@ -19,6 +23,7 @@ export class AppComponent {
     this.characterService.getAllCharacters()
       .subscribe(characters => {
         this.characters = characters;
+        this.character = this.characters[0];
       });
   }
 }
