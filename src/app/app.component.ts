@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import ICharacter from './models/character/ICharacter';
-import { CharacterService } from './services/character.service';
+import { CharacterService } from './services/character/character.service';
 
 @Component({
   selector: 'app-root',

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { CharacterService } from '../../../services/character.service';
+import { CharacterService } from '../../../services/character/character.service';
 import ICharacter from '../../../models/character/ICharacter';
 
 @Component({
@@ -14,7 +14,6 @@ export class CharacterViewComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    
   }
 
 }

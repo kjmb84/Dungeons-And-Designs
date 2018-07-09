@@ -1,4 +1,4 @@
-import { CharacterService } from './../../../services/character.service';
+import { CharacterService } from '../../../services/character/character.service';
 import { Observable } from 'rxjs/Observable';
 import { Component, OnInit, ViewChild,
   ElementRef, AfterViewInit, OnChanges, Input } from '@angular/core';
