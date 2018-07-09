@@ -98,12 +98,19 @@ export class MapGridComponent implements AfterViewInit {
 
   private captureEvents(canvasEl: HTMLCanvasElement): void {
     const keyDown = Observable.fromEvent(canvasEl, 'keydown');
+    const keyPress = Observable.fromEvent(canvasEl, 'keyPress');
+
+    keyPress
+      .subscribe((ke: KeyboardEvent) => {
+        this.clear();
+        this.cellInFocus.move(MapSquareDirection[ke.code]);
+      });
 
     keyDown
       .debounceTime(100)
-      .subscribe((a: KeyboardEvent) => {
+      .subscribe((ke: KeyboardEvent) => {
         this.clear();
-        this.cellInFocus.move(MapSquareDirection[a.code]);
+        this.cellInFocus.move(MapSquareDirection[ke.code]);
       });
   }
 
