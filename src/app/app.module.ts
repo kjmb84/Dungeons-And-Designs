@@ -1,3 +1,4 @@
+import { MapService } from './services/map/map.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
@@ -14,7 +15,8 @@ const components = [
 ];
 
 const services = [
-    CharacterService
+    CharacterService,
+    MapService
 ];
 
 const pipes = [

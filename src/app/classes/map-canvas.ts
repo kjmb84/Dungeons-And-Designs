@@ -1,9 +1,14 @@
+// import { FromEvent } from 'rxjs/observable/fromEvent';
 import { MapSquareDirection } from './../enums/map-square-directions';
-import { Observable } from 'rxjs/Observable';
+// import { Observable } from 'rxjs/Observable';
 import { MapCoordinates } from './map-coordinates';
 import { MapCell } from './map-cell';
 import { FocusCell } from './focus-cell';
 import { Dimensions } from './dimensions';
+// import 'rxjs/add/observable/fromEvent';
+
+import { fromEvent } from '../../../node_modules/rxjs';
+import { debounceTime } from '../../../node_modules/rxjs/operators';
 
 export class MapCanvas {
   public canvas: HTMLCanvasElement;
@@ -25,6 +30,32 @@ export class MapCanvas {
     this.initializeFocusCell();
   }
 
+  clear(): void {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  beginKeyboardEventCapture(): void {
+    const keyDown = fromEvent(this.canvas, 'keydown');
+    const keyPress = fromEvent(this.canvas, 'keypress');
+    // const keyDown = Observable.fromEvent(this.canvas, 'keydown');
+    // const keyPress = Observable.fromEvent(this.canvas, 'keyPress');
+
+    keyPress
+      .subscribe((ke: KeyboardEvent) => {
+        this.clear();
+        this.cellInFocus.move(MapSquareDirection[ke.code]);
+      });
+
+    keyDown
+      .pipe(debounceTime(100))
+      // .debounceTime(100)
+      .subscribe((ke: KeyboardEvent) => {
+        this.clear();
+        this.cellInFocus.move(MapSquareDirection[ke.code]);
+      });
+
+  }
+
   getMapCenter(): MapCoordinates {
     return new MapCoordinates
       (
@@ -34,51 +65,6 @@ export class MapCanvas {
         Math.floor(this.dimensions.x / 2),
         Math.floor(this.dimensions.y / 2)
       );
-  }
-
-  beginKeyboardEventCapture(): void {
-    const keyDown = Observable.fromEvent(this.canvas, 'keydown');
-    const keyPress = Observable.fromEvent(this.canvas, 'keyPress');
-
-    keyPress
-      .subscribe((ke: KeyboardEvent) => {
-        this.clear();
-        this.cellInFocus.move(MapSquareDirection[ke.code]);
-      });
-
-    keyDown
-      .debounceTime(100)
-      .subscribe((ke: KeyboardEvent) => {
-        this.clear();
-        this.cellInFocus.move(MapSquareDirection[ke.code]);
-      });
-
-  }
-
-  private initializeFocusCell(): void {
-      this.cellInFocus = new FocusCell(this.getMapCenter(), this.context, this.canvas);
-
-      // TODO: figure out why these two lines are necessary
-      this.cellInFocus.coordinates.x = Math.floor(this.dimensions.x / 2);
-      this.cellInFocus.coordinates.y = Math.floor(this.dimensions.y / 2);
-      this.cellInFocus.outline();
-    }
-
-  private initializeMapCells() {
-    for (let i = 0; i < this.dimensions.x; i++) {
-      for (let j = 0; j < this.dimensions.y; j++) {
-        this.mapCells.push(new MapCell(this.dimensions, this.cellWidth, this.cellHeight, i, j));
-      }
-    }
-  }
-
-  private setCanvasAndContext(canvas: HTMLCanvasElement): void {
-    this.canvas = canvas;
-    this.context = this.canvas.getContext('2d');
-  }
-
-  clear(): void {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   private initializeCanvas(): void {
@@ -104,6 +90,28 @@ export class MapCanvas {
     const url = URL.createObjectURL(svg);
 
     this.canvas.style.backgroundImage = `url('${url}')`;
+  }
+
+  private initializeFocusCell(): void {
+      this.cellInFocus = new FocusCell(this.getMapCenter(), this.context, this.canvas);
+
+      // TODO: figure out why these two lines are necessary
+      this.cellInFocus.coordinates.x = Math.floor(this.dimensions.x / 2);
+      this.cellInFocus.coordinates.y = Math.floor(this.dimensions.y / 2);
+      this.cellInFocus.outline();
+  }
+
+  private initializeMapCells(): void {
+    for (let i = 0; i < this.dimensions.x; i++) {
+      for (let j = 0; j < this.dimensions.y; j++) {
+        this.mapCells.push(new MapCell(this.dimensions, this.cellWidth, this.cellHeight, i, j));
+      }
+    }
+  }
+
+  private setCanvasAndContext(canvas: HTMLCanvasElement): void {
+    this.canvas = canvas;
+    this.context = this.canvas.getContext('2d');
   }
 
   private setCellDimensions(): void {

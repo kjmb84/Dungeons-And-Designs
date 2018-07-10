@@ -1,3 +1,4 @@
+import { MapService } from './../../../services/map/map.service';
 import { Dimensions } from './../../../classes/dimensions';
 import { CharacterService } from '../../../services/character/character.service';
 import { Component, ViewChild,
@@ -14,14 +15,22 @@ import { MapCanvas } from '../../../classes/map-canvas';
 export class MapGridComponent implements AfterViewInit {
 
   private _characterService: CharacterService;
+  private _mapService: MapService;
 
   @Input() dimensions: Dimensions = new Dimensions(11, 11);
   @ViewChild('mapCanvas') mapCanvasElement: ElementRef;
   private mapCanvas: MapCanvas;
 
-  constructor(_characterService: CharacterService) { }
+  constructor(characterService: CharacterService, mapService: MapService) {
+    this._characterService = characterService;
+    this._mapService = mapService;
+  }
 
   ngAfterViewInit(): void {
+    if (!(this.mapCanvas = this._mapService.get())) {
+      this.mapCanvas = this._mapService.set(new MapCanvas(<HTMLCanvasElement>this.mapCanvasElement.nativeElement));
+    }
+
     this.mapCanvas = new MapCanvas(<HTMLCanvasElement>this.mapCanvasElement.nativeElement);
     this.mapCanvas.beginKeyboardEventCapture();
   }
