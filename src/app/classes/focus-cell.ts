@@ -50,7 +50,7 @@ export class FocusCell {
     }
 
     private determineValidMove(): boolean {
-      
+
       return true;
     }
 
