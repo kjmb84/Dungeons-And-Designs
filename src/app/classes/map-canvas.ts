@@ -1,13 +1,9 @@
-// import { FromEvent } from 'rxjs/observable/fromEvent';
 import { MapSquareDirection } from './../enums/map-square-directions';
-// import { Observable } from 'rxjs/Observable';
 import { MapCoordinates } from './map-coordinates';
 import { MapCell } from './map-cell';
 import { FocusCell } from './focus-cell';
 import { Dimensions } from './dimensions';
-// import 'rxjs/add/observable/fromEvent';
-
-import { fromEvent } from '../../../node_modules/rxjs';
+import { fromEvent, merge } from '../../../node_modules/rxjs';
 import { debounceTime } from '../../../node_modules/rxjs/operators';
 
 export class MapCanvas {
@@ -37,22 +33,25 @@ export class MapCanvas {
   beginKeyboardEventCapture(): void {
     const keyDown = fromEvent(this.canvas, 'keydown');
     const keyPress = fromEvent(this.canvas, 'keypress');
-    // const keyDown = Observable.fromEvent(this.canvas, 'keydown');
-    // const keyPress = Observable.fromEvent(this.canvas, 'keyPress');
 
-    keyPress
-      .subscribe((ke: KeyboardEvent) => {
-        this.clear();
-        this.cellInFocus.move(MapSquareDirection[ke.code]);
-      });
+    const keyEvents = merge(keyDown, keyPress)
+                        .subscribe((ke: KeyboardEvent) => {
+                          this.clear();
+                          this.cellInFocus.move(MapSquareDirection[ke.code]);
+                        });
 
-    keyDown
-      .pipe(debounceTime(100))
-      // .debounceTime(100)
-      .subscribe((ke: KeyboardEvent) => {
-        this.clear();
-        this.cellInFocus.move(MapSquareDirection[ke.code]);
-      });
+    // keyPress
+    //   .subscribe((ke: KeyboardEvent) => {
+    //     this.clear();
+    //     this.cellInFocus.move(MapSquareDirection[ke.code]);
+    //   });
+
+    // keyDown
+    //   .pipe(debounceTime(100))
+    //   .subscribe((ke: KeyboardEvent) => {
+    //     this.clear();
+    //     this.cellInFocus.move(MapSquareDirection[ke.code]);
+    //   });
 
   }
 

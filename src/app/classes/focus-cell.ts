@@ -34,15 +34,13 @@ export class FocusCell {
       }
 
       this.outline();
+      this.fillHistory();
       console.log(this.history);
     }
 
-    outline() {
-      // this.context.globalCompositeOperation = 'destination-atop';
-      this.context.rect(this.coordinates.x * this.coordinates.width,
-                        this.coordinates.y * this.coordinates.height,
-                        this.coordinates.width,
-                        this.coordinates.height);
+    private outline() {
+      this.context.beginPath();
+      this.createRectFromCoordinates(this.coordinates);
 
       this.context.lineWidth = 4;
       this.context.strokeStyle = 'rgba(0,255,0,0.7)';
@@ -52,8 +50,23 @@ export class FocusCell {
       this.context.stroke();
     }
 
-    clear(): void {
-      // this.context.clearRect()
-      // this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    private fill(cell: MapCoordinates) {
+      this.context.beginPath();
+      this.createRectFromCoordinates(cell);
+      this.context.fillStyle = 'rgba(0,0,255,0.05)';
+      this.context.fill();
     }
+
+    private fillHistory() {
+      this.history.forEach(cell => {
+        this.fill(cell);
+      });
+    }
+
+    private createRectFromCoordinates(cell: MapCoordinates) {
+      this.context.rect(cell.x * cell.width,
+                        cell.y * cell.height,
+                        cell.width,
+                        cell.height);
+      }
   }
