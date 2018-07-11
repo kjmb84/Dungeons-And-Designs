@@ -35,10 +35,9 @@ export class FocusCell {
 
       this.outline();
       this.fillHistory();
-      console.log(this.history);
     }
 
-    private outline() {
+    outline(): void {
       this.context.beginPath();
       this.createRectFromCoordinates(this.coordinates);
 
@@ -50,20 +49,26 @@ export class FocusCell {
       this.context.stroke();
     }
 
-    private fill(cell: MapCoordinates) {
+    private determineValidMove(): boolean {
+      
+      return true;
+    }
+
+
+    private fill(cell: MapCoordinates): void {
       this.context.beginPath();
       this.createRectFromCoordinates(cell);
       this.context.fillStyle = 'rgba(0,0,255,0.05)';
       this.context.fill();
     }
 
-    private fillHistory() {
+    private fillHistory(): void {
       this.history.forEach(cell => {
         this.fill(cell);
       });
     }
 
-    private createRectFromCoordinates(cell: MapCoordinates) {
+    private createRectFromCoordinates(cell: MapCoordinates): void {
       this.context.rect(cell.x * cell.width,
                         cell.y * cell.height,
                         cell.width,

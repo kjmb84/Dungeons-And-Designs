@@ -39,20 +39,6 @@ export class MapCanvas {
                           this.clear();
                           this.cellInFocus.move(MapSquareDirection[ke.code]);
                         });
-
-    // keyPress
-    //   .subscribe((ke: KeyboardEvent) => {
-    //     this.clear();
-    //     this.cellInFocus.move(MapSquareDirection[ke.code]);
-    //   });
-
-    // keyDown
-    //   .pipe(debounceTime(100))
-    //   .subscribe((ke: KeyboardEvent) => {
-    //     this.clear();
-    //     this.cellInFocus.move(MapSquareDirection[ke.code]);
-    //   });
-
   }
 
   getMapCenter(): MapCoordinates {
