@@ -1,6 +1,8 @@
+import { services } from './services/services';
+import { ServiceLocator } from './services/service-locator';
 import { MapService } from './services/map/map.service';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Injector } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
@@ -14,7 +16,7 @@ const components = [
     CharacterViewComponent
 ];
 
-const services = [
+const serviceProviders = [
     CharacterService,
     MapService
 ];
@@ -35,7 +37,21 @@ const pipes = [
     BrowserModule,
     HttpClientModule
   ],
-  providers: [services],
+  providers: [serviceProviders],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+    this.initializeStaticServiceInjector();
+  }
+
+  initializeStaticServiceInjector() {
+    ServiceLocator.injector = Injector.create(
+      Object.keys(services).map(key => ({
+        provide: services[key].provide,
+        useClass: services[key].provide,
+        deps: services[key].deps
+      }))
+    );
+  }
+}

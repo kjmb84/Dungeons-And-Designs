@@ -78,7 +78,7 @@ export class MapCanvas {
   }
 
   private initializeFocusCell(): void {
-      this.cellInFocus = new FocusCell(this.getMapCenter(), this.context, this.canvas);
+      this.cellInFocus = new FocusCell(this.getMapCenter(), this.context);
 
       // TODO: figure out why these two lines are necessary
       this.cellInFocus.coordinates.x = Math.floor(this.dimensions.x / 2);

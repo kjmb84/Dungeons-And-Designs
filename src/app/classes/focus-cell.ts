@@ -1,16 +1,16 @@
+import { MapObject } from './map-object';
 import { MapSquareDirection } from './../enums/map-square-directions';
 import { MapCoordinates } from './map-coordinates';
 
-export class FocusCell {
+export class FocusCell extends MapObject {
     coordinates: MapCoordinates;
     history: MapCoordinates[] = [];
-    canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
 
-    constructor(coordinates: MapCoordinates, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+    constructor(coordinates: MapCoordinates, context: CanvasRenderingContext2D) {
+      super();
       this.coordinates = coordinates;
       this.context = context;
-      this.canvas = canvas;
     }
 
     move(direction: MapSquareDirection): void {
