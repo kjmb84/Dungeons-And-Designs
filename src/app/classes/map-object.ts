@@ -10,9 +10,14 @@ export class MapObject {
   protected _mapService: MapService;
   mapCanvas: MapCanvas;
 
-  constructor() {
+  constructor(coordinates?: MapCoordinates) {
     this._mapService = ServiceLocator.injector.get(MapService);
-    this.mapCanvas = this._mapService.get();
+    this._mapService.getMap().subscribe(map => {
+      this.mapCanvas = map;
+    });
+    // this.mapCanvas = this._mapService.getMap();
+
+    this.coordinates = coordinates;
   }
 
   move(direction: MapSquareDirection): void {

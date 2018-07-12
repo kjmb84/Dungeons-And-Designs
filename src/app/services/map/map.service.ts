@@ -1,3 +1,4 @@
+import { Observable, of } from 'rxjs';
 import { MapCanvas } from './../../classes/map-canvas';
 import { Injectable } from '@angular/core';
 
@@ -13,8 +14,8 @@ export class MapService {
     return this.mapCanvas;
   }
 
-  get(): MapCanvas {
-    return this.mapCanvas;
+  getMap(): Observable<MapCanvas> {
+    return of(this.mapCanvas);
   }
 
 }

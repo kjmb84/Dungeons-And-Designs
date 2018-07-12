@@ -3,39 +3,44 @@ import { MapSquareDirection } from './../enums/map-square-directions';
 import { MapCoordinates } from './map-coordinates';
 
 export class FocusCell extends MapObject {
-    coordinates: MapCoordinates;
     history: MapCoordinates[] = [];
     private context: CanvasRenderingContext2D;
 
     constructor(coordinates: MapCoordinates, context: CanvasRenderingContext2D) {
-      super();
-      this.coordinates = coordinates;
+      super(coordinates);
       this.context = context;
     }
 
-    move(direction: MapSquareDirection): void {
-      const previousCell: MapCoordinates = Object.assign({}, this.coordinates);
-      if (direction !== undefined) {
-        this.history.push(previousCell);
-        switch (direction) {
-          case MapSquareDirection.ArrowDown:
-            this.coordinates.moveDown();
-            break;
-          case MapSquareDirection.ArrowRight:
-            this.coordinates.moveLeft();
-            break;
-          case MapSquareDirection.ArrowUp:
-            this.coordinates.moveUp();
-            break;
-          case MapSquareDirection.ArrowLeft:
-            this.coordinates.moveRight();
-            break;
-        }
-      }
-
+    moveFocusCell(direction: MapSquareDirection): void {
+      this.move(direction);
       this.outline();
       this.fillHistory();
     }
+
+    // move(direction: MapSquareDirection): void {
+      // const previousCell: MapCoordinates = Object.assign({}, this.coordinates);
+      // if (direction !== undefined) {
+      //   this.history.push(previousCell);
+      //   switch (direction) {
+      //     case MapSquareDirection.ArrowDown:
+      //       this.coordinates.moveDown();
+      //       break;
+      //     case MapSquareDirection.ArrowRight:
+      //       this.coordinates.moveLeft();
+      //       break;
+      //     case MapSquareDirection.ArrowUp:
+      //       this.coordinates.moveUp();
+      //       break;
+      //     case MapSquareDirection.ArrowLeft:
+      //       this.coordinates.moveRight();
+      //       break;
+      //   }
+      // }
+
+
+    //   this.outline();
+    //   this.fillHistory();
+    // }
 
     outline(): void {
       this.context.beginPath();

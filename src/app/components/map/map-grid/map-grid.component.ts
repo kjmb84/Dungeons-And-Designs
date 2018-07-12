@@ -27,11 +27,14 @@ export class MapGridComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (!(this.mapCanvas = this._mapService.get())) {
-      this.mapCanvas = this._mapService.set(new MapCanvas(<HTMLCanvasElement>this.mapCanvasElement.nativeElement));
-    }
-
-    this.mapCanvas = new MapCanvas(<HTMLCanvasElement>this.mapCanvasElement.nativeElement);
+    // if (!(this.mapCanvas = this._mapService.getMap())) {
+    //   this.mapCanvas = this._mapService.set(new MapCanvas(<HTMLCanvasElement>this.mapCanvasElement.nativeElement));
+    // }
+    this._mapService.set(new MapCanvas(<HTMLCanvasElement>this.mapCanvasElement.nativeElement));
+    this._mapService.getMap().subscribe(map => {
+      this.mapCanvas = map;
+    });
+    // this.mapCanvas = new MapCanvas(<HTMLCanvasElement>this.mapCanvasElement.nativeElement);
     this.mapCanvas.beginKeyboardEventCapture();
   }
 }
