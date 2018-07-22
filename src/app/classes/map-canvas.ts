@@ -35,23 +35,21 @@ export class MapCanvas {
 
     const keyEvents = merge(keyDown, keyPress)
                         .subscribe((ke: KeyboardEvent) => {
-                          console.log(ke);
-
                           this.clear();
                           this.cellInFocus.move(MapSquareDirection[ke.code]);
+                          this.cellInFocus.draw();
                         });
-    console.log(keyEvents);
-
   }
 
   getMapCenter(): MapCoordinates {
     return new MapCoordinates
       (
-        this.dimensions,
-        this.cellWidth,
-        this.cellHeight,
-        Math.floor(this.dimensions.x / 2),
-        Math.floor(this.dimensions.y / 2)
+        { dimensions: this.dimensions,
+          width: this.cellWidth,
+          height: this.cellHeight,
+          xCoordinate: Math.floor(this.dimensions.x / 2),
+          yCoordinate: Math.floor(this.dimensions.y / 2)
+        }
       );
   }
 
@@ -88,7 +86,13 @@ export class MapCanvas {
   private initializeMapCells(): void {
     for (let i = 0; i < this.dimensions.x; i++) {
       for (let j = 0; j < this.dimensions.y; j++) {
-        this.mapCells.push(new MapCell(this.dimensions, this.cellWidth, this.cellHeight, i, j));
+        this.mapCells.push(new MapCell({
+          dimensions: this.dimensions,
+          width: this.cellWidth,
+          height: this.cellHeight,
+          xCoordinate: i,
+          yCoordinate: j,
+        ));
       }
     }
   }

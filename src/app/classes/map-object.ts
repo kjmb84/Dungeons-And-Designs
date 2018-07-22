@@ -17,17 +17,12 @@ export class MapObject {
   }
 
   move(direction: MapSquareDirection): void {
-    // const previousCell: MapCoordinates = {...this.coordinates};
-    const previousCell: MapCoordinates = this.deepClone(this.coordinates);
-    // const previousCell: MapCoordinates = Object.assign({}, this.coordinates);
+    const previousCell: MapCoordinates = this.copyInstance(this.coordinates);
 
 
     if (direction !== undefined) {
       switch (direction) {
         case MapSquareDirection.ArrowDown:
-        console.log(1);
-          console.log(this.coordinates);
-          
           this.coordinates.moveDown();
           break;
         case MapSquareDirection.ArrowRight:
@@ -49,14 +44,25 @@ export class MapObject {
     }
   }
 
-  private deepClone(coordinates: MapCoordinates) {
-    return <MapCoordinates>JSON.parse(JSON.stringify(coordinates));
+  private copyInstance (original) {
+    const copied = Object.assign(
+      Object.create(
+        Object.getPrototypeOf(original)
+      ),
+      original
+    );
+    return copied;
   }
 
   private validMove(): boolean {
     let valid = false;
 
-    if (this.coordinates.x > this.mapCanvas.dimensions.x || this.coordinates.y > this.mapCanvas.dimensions.y) {
+    if (
+         this.coordinates.x < this.mapCanvas.dimensions.x
+      && this.coordinates.x >= 0
+      && this.coordinates.y < this.mapCanvas.dimensions.y
+      && this.coordinates.y >= 0
+    ) {
       valid = true;
     }
 

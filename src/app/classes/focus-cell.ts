@@ -17,6 +17,12 @@ export class FocusCell extends MapObject {
       this.fillHistory();
     }
 
+    draw(): void {
+      this.outline();
+      this.fill(this.coordinates);
+      this.fillHistory();
+    }
+
     outline(): void {
       this.context.beginPath();
       this.createRectFromCoordinates(this.coordinates);
