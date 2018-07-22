@@ -13,11 +13,13 @@ export class FocusCell extends MapObject {
 
     moveFocusCell(direction: MapSquareDirection): void {
       this.move(direction);
+      this.draw();
       this.outline();
       this.fillHistory();
     }
 
     draw(): void {
+      this.mapCanvas.clear();
       this.outline();
       this.fill(this.coordinates);
       this.fillHistory();

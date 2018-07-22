@@ -34,11 +34,7 @@ export class MapCanvas {
     const keyPress = fromEvent(this.canvas, 'keypress');
 
     const keyEvents = merge(keyDown, keyPress)
-                        .subscribe((ke: KeyboardEvent) => {
-                          this.clear();
-                          this.cellInFocus.move(MapSquareDirection[ke.code]);
-                          this.cellInFocus.draw();
-                        });
+                        .subscribe((ke: KeyboardEvent) => this.cellInFocus.moveFocusCell(MapSquareDirection[ke.code]));
   }
 
   getMapCenter(): MapCoordinates {
@@ -81,6 +77,7 @@ export class MapCanvas {
   private initializeFocusCell(): void {
       this.cellInFocus = new FocusCell(this.getMapCenter(), this.context);
       this.cellInFocus.outline();
+      this.cellInFocus.draw();
   }
 
   private initializeMapCells(): void {

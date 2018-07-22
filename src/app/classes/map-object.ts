@@ -19,7 +19,6 @@ export class MapObject {
   move(direction: MapSquareDirection): void {
     const previousCell: MapCoordinates = this.copyInstance(this.coordinates);
 
-
     if (direction !== undefined) {
       switch (direction) {
         case MapSquareDirection.ArrowDown:
