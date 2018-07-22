@@ -16,5 +16,7 @@ export class MapCell extends Dimensions {
     this.xEnd = this.xStart + width / dimensions.x - 1;
     this.yStart = width / dimensions.y * yCoordinate;
     this.yEnd = this.yStart + width / dimensions.y - 1;
+    this.x = xCoordinate;
+    this.y = yCoordinate;
   }
 }

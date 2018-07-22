@@ -17,4 +17,9 @@ export class MapCoordinates extends MapCell {
     moveUp() {
       this.y--;
     }
+
+    setCoordinates(coordinates: {x: number, y: number}): void {
+      this.x = coordinates.x;
+      this.y = coordinates.y;
+    }
 }

@@ -35,9 +35,13 @@ export class MapCanvas {
 
     const keyEvents = merge(keyDown, keyPress)
                         .subscribe((ke: KeyboardEvent) => {
+                          console.log(ke);
+
                           this.clear();
                           this.cellInFocus.move(MapSquareDirection[ke.code]);
                         });
+    console.log(keyEvents);
+
   }
 
   getMapCenter(): MapCoordinates {
@@ -78,10 +82,6 @@ export class MapCanvas {
 
   private initializeFocusCell(): void {
       this.cellInFocus = new FocusCell(this.getMapCenter(), this.context);
-
-      // TODO: figure out why these two lines are necessary
-      this.cellInFocus.coordinates.x = Math.floor(this.dimensions.x / 2);
-      this.cellInFocus.coordinates.y = Math.floor(this.dimensions.y / 2);
       this.cellInFocus.outline();
   }
 

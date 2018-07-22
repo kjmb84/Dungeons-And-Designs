@@ -28,14 +28,13 @@ export class MapObject {
           this.coordinates.moveLeft();
           break;
         case MapSquareDirection.ArrowUp:
-        console.log(this.coordinates);
-
           this.coordinates.moveUp();
           break;
         case MapSquareDirection.ArrowLeft:
           this.coordinates.moveRight();
           break;
       }
+
       if (this.validMove()) {
         this.history.push(previousCell);
       } else {
