@@ -11,6 +11,8 @@ export class MapCoordinates extends MapCell {
     }
 
     moveDown() {
+      console.log(2);
+      
       this.y++;
     }
 

@@ -8,15 +8,24 @@ export class MapCell extends Dimensions {
   yStart: number;
   yEnd: number;
 
-  constructor(dimensions: Dimensions, width: number, height: number, xCoordinate: number, yCoordinate: number) {
+  constructor(params: MapCellConstructorProperties) {
     super();
-    this.width = width;
-    this.height = height;
-    this.xStart = width / dimensions.x * xCoordinate;
-    this.xEnd = this.xStart + width / dimensions.x - 1;
-    this.yStart = width / dimensions.y * yCoordinate;
-    this.yEnd = this.yStart + width / dimensions.y - 1;
-    this.x = xCoordinate;
-    this.y = yCoordinate;
+    this.width = params.width;
+    this.height = params.height;
+    this.xStart = params.width / params.dimensions.x * params.xCoordinate;
+    this.xEnd = this.xStart + params.width / params.dimensions.x - 1;
+    this.yStart = params.width / params.dimensions.y * params.yCoordinate;
+    this.yEnd = this.yStart + params.width / params.dimensions.y - 1;
+    this.x = params.xCoordinate;
+    this.y = params.yCoordinate;
   }
+}
+
+interface MapCellConstructorProperties {
+  dimensions: Dimensions;
+  width: number;
+  height: number;
+  xCoordinate: number;
+  yCoordinate: number;
+
 }
