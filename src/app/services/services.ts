@@ -10,5 +10,9 @@ export const services: {[key: string]: {provide: any, deps: any[], useClass?: an
     'map': {
         provide: MapService,
         deps: []
+    },
+    'http': {
+        provide: HttpClient,
+        deps: []
     }
   };

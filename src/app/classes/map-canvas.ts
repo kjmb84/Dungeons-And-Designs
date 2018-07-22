@@ -4,7 +4,6 @@ import { MapCell } from './map-cell';
 import { FocusCell } from './focus-cell';
 import { Dimensions } from './dimensions';
 import { fromEvent, merge } from '../../../node_modules/rxjs';
-import { debounceTime } from '../../../node_modules/rxjs/operators';
 
 export class MapCanvas {
   public canvas: HTMLCanvasElement;

@@ -23,7 +23,6 @@ export class CharacterService {
     .subscribe(c => {
       this.characters = c;
       this.mainCharacter = this.characters[0];
-      console.log(c);
     });
   }
 

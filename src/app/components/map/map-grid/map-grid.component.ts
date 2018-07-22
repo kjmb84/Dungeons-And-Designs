@@ -1,6 +1,6 @@
+import { ServiceLocator } from './../../../services/service-locator';
 import { MapService } from './../../../services/map/map.service';
 import { Dimensions } from './../../../classes/dimensions';
-import { CharacterService } from '../../../services/character/character.service';
 import { Component, ViewChild,
   ElementRef, AfterViewInit, Input } from '@angular/core';
 import { MapCanvas } from '../../../classes/map-canvas';
@@ -13,28 +13,19 @@ import { MapCanvas } from '../../../classes/map-canvas';
 })
 
 export class MapGridComponent implements AfterViewInit {
-
-  private _characterService: CharacterService;
   private _mapService: MapService;
 
   @Input() dimensions: Dimensions = new Dimensions(11, 11);
   @ViewChild('mapCanvas') mapCanvasElement: ElementRef;
   private mapCanvas: MapCanvas;
 
-  constructor(characterService: CharacterService, mapService: MapService) {
-    this._characterService = characterService;
-    this._mapService = mapService;
+  constructor() {
+    this._mapService = ServiceLocator.injector.get(MapService);
+    this._mapService.getMap().subscribe(map => this.mapCanvas = map);
   }
 
   ngAfterViewInit(): void {
-    // if (!(this.mapCanvas = this._mapService.getMap())) {
-    //   this.mapCanvas = this._mapService.set(new MapCanvas(<HTMLCanvasElement>this.mapCanvasElement.nativeElement));
-    // }
     this._mapService.set(new MapCanvas(<HTMLCanvasElement>this.mapCanvasElement.nativeElement));
-    this._mapService.getMap().subscribe(map => {
-      this.mapCanvas = map;
-    });
-    // this.mapCanvas = new MapCanvas(<HTMLCanvasElement>this.mapCanvasElement.nativeElement);
     this.mapCanvas.beginKeyboardEventCapture();
   }
 }

@@ -17,31 +17,6 @@ export class FocusCell extends MapObject {
       this.fillHistory();
     }
 
-    // move(direction: MapSquareDirection): void {
-      // const previousCell: MapCoordinates = Object.assign({}, this.coordinates);
-      // if (direction !== undefined) {
-      //   this.history.push(previousCell);
-      //   switch (direction) {
-      //     case MapSquareDirection.ArrowDown:
-      //       this.coordinates.moveDown();
-      //       break;
-      //     case MapSquareDirection.ArrowRight:
-      //       this.coordinates.moveLeft();
-      //       break;
-      //     case MapSquareDirection.ArrowUp:
-      //       this.coordinates.moveUp();
-      //       break;
-      //     case MapSquareDirection.ArrowLeft:
-      //       this.coordinates.moveRight();
-      //       break;
-      //   }
-      // }
-
-
-    //   this.outline();
-    //   this.fillHistory();
-    // }
-
     outline(): void {
       this.context.beginPath();
       this.createRectFromCoordinates(this.coordinates);
@@ -53,12 +28,6 @@ export class FocusCell extends MapObject {
       this.context.fill();
       this.context.stroke();
     }
-
-    private determineValidMove(): boolean {
-
-      return true;
-    }
-
 
     private fill(cell: MapCoordinates): void {
       this.context.beginPath();

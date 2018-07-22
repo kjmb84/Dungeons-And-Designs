@@ -10,13 +10,9 @@ export class MapObject {
   protected _mapService: MapService;
   mapCanvas: MapCanvas;
 
-  constructor(coordinates?: MapCoordinates) {
+  constructor(coordinates: MapCoordinates) {
     this._mapService = ServiceLocator.injector.get(MapService);
-    this._mapService.getMap().subscribe(map => {
-      this.mapCanvas = map;
-    });
-    // this.mapCanvas = this._mapService.getMap();
-
+    this._mapService.getMap().subscribe(map => this.mapCanvas = map);
     this.coordinates = coordinates;
   }
 
@@ -32,6 +28,8 @@ export class MapObject {
           this.coordinates.moveLeft();
           break;
         case MapSquareDirection.ArrowUp:
+        console.log(this.coordinates);
+
           this.coordinates.moveUp();
           break;
         case MapSquareDirection.ArrowLeft:
@@ -47,8 +45,6 @@ export class MapObject {
   }
 
   private validMove(): boolean {
-    console.log(this.mapCanvas);
-
     let valid = false;
 
     if (this.coordinates.x > this.mapCanvas.dimensions.x || this.coordinates.y > this.mapCanvas.dimensions.y) {
