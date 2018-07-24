@@ -8,7 +8,7 @@ export class MapObject {
   coordinates: MapCoordinates;
   history: MapCoordinates[];
   protected _mapService: MapService;
-  mapCanvas: MapCanvas;
+  protected mapCanvas: MapCanvas;
 
   constructor(coordinates: MapCoordinates) {
     this._mapService = ServiceLocator.injector.get(MapService);

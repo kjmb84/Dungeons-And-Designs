@@ -1,14 +1,18 @@
+import { MapCanvas } from './map-canvas';
+import { MapService } from './../services/map/map.service';
+import { ServiceLocator } from './../services/service-locator';
 import { MapObject } from './map-object';
 import { MapSquareDirection } from './../enums/map-square-directions';
 import { MapCoordinates } from './map-coordinates';
 
 export class FocusCell extends MapObject {
     history: MapCoordinates[] = [];
-    private context: CanvasRenderingContext2D;
 
-    constructor(coordinates: MapCoordinates, context: CanvasRenderingContext2D) {
+    constructor(coordinates: MapCoordinates) {
       super(coordinates);
-      this.context = context;
+
+      this._mapService = ServiceLocator.injector.get(MapService);
+      this._mapService.getMap().subscribe(map => this.mapCanvas = map);
     }
 
     moveFocusCell(direction: MapSquareDirection): void {
@@ -26,22 +30,22 @@ export class FocusCell extends MapObject {
     }
 
     outline(): void {
-      this.context.beginPath();
+      this.mapCanvas.getContext().beginPath();
       this.createRectFromCoordinates(this.coordinates);
 
-      this.context.lineWidth = 4;
-      this.context.strokeStyle = 'rgba(0,255,0,0.7)';
-      this.context.fillStyle = 'rgba(0,0,255,0.05)';
+      this.mapCanvas.getContext().lineWidth = 4;
+      this.mapCanvas.getContext().strokeStyle = 'rgba(0,255,0,0.7)';
+      this.mapCanvas.getContext().fillStyle = 'rgba(0,0,255,0.05)';
 
-      this.context.fill();
-      this.context.stroke();
+      this.mapCanvas.getContext().fill();
+      this.mapCanvas.getContext().stroke();
     }
 
     private fill(cell: MapCoordinates): void {
-      this.context.beginPath();
+      this.mapCanvas.getContext().beginPath();
       this.createRectFromCoordinates(cell);
-      this.context.fillStyle = 'rgba(0,0,255,0.05)';
-      this.context.fill();
+      this.mapCanvas.getContext().fillStyle = 'rgba(0,0,255,0.05)';
+      this.mapCanvas.getContext().fill();
     }
 
     private fillHistory(): void {
@@ -51,9 +55,9 @@ export class FocusCell extends MapObject {
     }
 
     private createRectFromCoordinates(cell: MapCoordinates): void {
-      this.context.rect(cell.x * cell.width,
-                        cell.y * cell.height,
-                        cell.width,
-                        cell.height);
+      this.mapCanvas.getContext().rect(cell.x * cell.width,
+                                       cell.y * cell.height,
+                                       cell.width,
+                                       cell.height);
       }
   }

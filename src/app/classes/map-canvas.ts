@@ -49,6 +49,10 @@ export class MapCanvas {
       );
   }
 
+  getContext(): CanvasRenderingContext2D {
+    return this.context;
+  }
+
   private initializeCanvas(): void {
     const data = `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"> \
         <defs> \
@@ -75,7 +79,7 @@ export class MapCanvas {
   }
 
   private initializeFocusCell(): void {
-      this.cellInFocus = new FocusCell(this.getMapCenter(), this.context);
+      this.cellInFocus = new FocusCell(this.getMapCenter());
       this.cellInFocus.outline();
       this.cellInFocus.draw();
   }

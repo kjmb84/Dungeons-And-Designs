@@ -10,7 +10,7 @@ export class MapService {
   private mapCanvas$: Observable<MapCanvas> = this.mapCanvas.asObservable();
   constructor() { }
 
-  set(newMapCanvas: MapCanvas): void {
+  setMap(newMapCanvas: MapCanvas): void {
     this.mapCanvas.next(newMapCanvas);
   }
 
