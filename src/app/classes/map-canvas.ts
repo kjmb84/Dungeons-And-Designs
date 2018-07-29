@@ -6,7 +6,7 @@ import { Dimensions } from './dimensions';
 import { fromEvent, merge } from '../../../node_modules/rxjs';
 
 export class MapCanvas {
-  public canvas: HTMLCanvasElement;
+  private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
 
   private cellWidth: number;
@@ -19,10 +19,6 @@ export class MapCanvas {
 
   constructor(mapCanvas: HTMLCanvasElement) {
     this.setCanvasAndContext(mapCanvas);
-    this.setCellDimensions();
-    this.initializeCanvas();
-    this.initializeMapCells();
-    this.initializeFocusCell();
   }
 
   clear(): void {
@@ -53,6 +49,13 @@ export class MapCanvas {
     return this.context;
   }
 
+  initialize(): void {
+    this.setCellDimensions();
+    this.initializeCanvas();
+    this.initializeFocusCell();
+    this.initializeMapCells();
+  }
+
   private initializeCanvas(): void {
     const data = `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"> \
         <defs> \
@@ -80,7 +83,6 @@ export class MapCanvas {
 
   private initializeFocusCell(): void {
       this.cellInFocus = new FocusCell(this.getMapCenter());
-      this.cellInFocus.outline();
       this.cellInFocus.draw();
   }
 

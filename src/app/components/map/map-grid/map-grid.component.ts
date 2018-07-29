@@ -26,6 +26,7 @@ export class MapGridComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this._mapService.setMap(new MapCanvas(<HTMLCanvasElement>this.mapCanvasElement.nativeElement));
+    this.mapCanvas.initialize();
     this.mapCanvas.beginKeyboardEventCapture();
   }
 }

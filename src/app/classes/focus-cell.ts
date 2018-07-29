@@ -6,20 +6,13 @@ import { MapSquareDirection } from './../enums/map-square-directions';
 import { MapCoordinates } from './map-coordinates';
 
 export class FocusCell extends MapObject {
-    history: MapCoordinates[] = [];
-
     constructor(coordinates: MapCoordinates) {
       super(coordinates);
-
-      this._mapService = ServiceLocator.injector.get(MapService);
-      this._mapService.getMap().subscribe(map => this.mapCanvas = map);
     }
 
     moveFocusCell(direction: MapSquareDirection): void {
       this.move(direction);
       this.draw();
-      this.outline();
-      this.fillHistory();
     }
 
     draw(): void {

@@ -1,4 +1,4 @@
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { MapCanvas } from './../../classes/map-canvas';
 import { Injectable } from '@angular/core';
 
@@ -6,12 +6,12 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class MapService {
-  private mapCanvas: Subject<MapCanvas> = new Subject<MapCanvas>();
-  private mapCanvas$: Observable<MapCanvas> = this.mapCanvas.asObservable();
+  private mapCanvasBehaviorSubject: BehaviorSubject<MapCanvas> = new BehaviorSubject<MapCanvas>(null);
+  private mapCanvas$: Observable<MapCanvas> = this.mapCanvasBehaviorSubject.asObservable();
   constructor() { }
 
   setMap(newMapCanvas: MapCanvas): void {
-    this.mapCanvas.next(newMapCanvas);
+    this.mapCanvasBehaviorSubject.next(newMapCanvas);
   }
 
   getMap(): Observable<MapCanvas> {
